@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 
 // Suggested initial states
 const initialMessage = ''
@@ -9,6 +9,13 @@ const initialIndex = 4 // the index the "B" is at
 export default function AppFunctional(props) {
   // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
   // You can delete them and build your own logic from scratch.
+  const coordinatesArr = [
+    (1,1), (2,1), (3,1), 
+    (1,2), (2,2), (3,2),
+    (1,3), (2,3), (3,3)
+  ];
+
+  const [currentB, setCurrentB] = useState(coordinatesArr[initialIndex]);
 
   function getXY() {
     // It it not necessary to have a state to track the coordinates.

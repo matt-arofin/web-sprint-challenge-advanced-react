@@ -51,8 +51,7 @@ export default class AppClass extends React.Component {
     // It it not necessary to have a state to track the "Coordinates (2, 2)" message for the user.
     // You can use the `getXY` helper above to obtain the coordinates, and then `getXYMessage`
     // returns the fully constructed string.
-    console.log(`Coordinates ${this.coordinatesArr[this.getXY()]}`)
-
+    return `Coordinates: ${this.coordinatesArr[this.state.index][0]}, ${this.coordinatesArr[this.state.index][1]}`
   }
 
   reset = () => {
@@ -83,6 +82,7 @@ export default class AppClass extends React.Component {
   onSubmit = (evt) => {
     // Use a POST request to send a payload to the server.
     // axios.post(http://localhost:9000/api/result, { "x": 1, "y": 2, "steps": 3, "email": "lady@gaga.com" })
+    // post data format: {`"x": ${this.coordinatesArr[this.state.index][0]}, "y": ${this.coordinatesArr[this.state.index][1]}, "steps": ${this.steps}, "email": ${this.email}`}
   }
 
   render() {
@@ -91,7 +91,7 @@ export default class AppClass extends React.Component {
     return (
       <div id="wrapper" className={className}>
         <div className="info">
-          <h3 id="coordinates">Coordinates {this.coordinatesArr[this.state.index][0]}, {this.coordinatesArr[this.state.index][1]}</h3>
+          <h3 id="coordinates">{this.getXYMessage()}</h3>
           <h3 id="steps">You moved {`${this.state.steps}`} times</h3>
         </div>
         <div id="grid">

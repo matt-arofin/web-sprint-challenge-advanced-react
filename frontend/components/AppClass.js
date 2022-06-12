@@ -43,7 +43,7 @@ export default class AppClass extends React.Component {
   getXY = () => {
     // It it not necessary to have a state to track the coordinates.
     // It's enough to know what index the "B" is at, to be able to calculate them.
-    console.log('current index of B: ', `(${this.coordinatesArr[this.state.index][0]}, ${this.coordinatesArr[this.state.index][1]})`)
+    // console.log('current index of B: ', `(${this.coordinatesArr[this.state.index][0]}, ${this.coordinatesArr[this.state.index][1]})`)
     return this.coordinatesArr[this.state.index];
   }
 
@@ -68,31 +68,49 @@ export default class AppClass extends React.Component {
     // This helper takes a direction ("left", "up", etc) and calculates what the next index
     // of the "B" would be. If the move is impossible because we are at the edge of the grid,
     // this helper should return the current index unchanged.
+    // Up and Down should change index +/- 3:
+    if(direction == 'up' && this.state.index -3  >= 0){
+      return {index:this.state.index - 3, steps:this.state.steps + 1}
+    } else if(direction == 'down' && this.state.index + 3 <= 8){
+      return {index:this.state.index + 3, steps:this.state.steps + 1}
+    } else if(direction == 'left' && this.state.index - 1 >= 0){
+      return {index:this.state.index - 1, steps:this.state.steps + 1}
+    } else if(direction == 'right' && this.state.index + 1 <= 8){
+      return {index:this.state.index + 1, steps:this.state.steps + 1}
+    } else {return {index:this.state.index}}
   }
 
   move = (evt) => {
     // This event handler can use the helper above to obtain a new index for the "B",
     // and change any states accordingly. this.setState()
+    this.getNextIndex(evt.target.id);
+    console.log('moving from: ', this.getNextIndex(evt.target.id))
+    this.setState({...this.state, ...this.getNextIndex(evt.target.id)})
+    console.log("Move handler triggered - previous state: ", this.state)
   }
 
   onChange = (evt) => {
     // You will need this to update the value of the input.
+    // Handler should update email field in form
+    this.setState({...this.state, email:evt.target.value});
+    console.log(this.state.email);
   }
 
   onSubmit = (evt) => {
     // Use a POST request to send a payload to the server.
     // axios.post(http://localhost:9000/api/result, { "x": 1, "y": 2, "steps": 3, "email": "lady@gaga.com" })
     // post data format: {`"x": ${this.coordinatesArr[this.state.index][0]}, "y": ${this.coordinatesArr[this.state.index][1]}, "steps": ${this.steps}, "email": ${this.email}`}
+    console.log(evt.target)
   }
 
   render() {
     const { className } = this.props;
-    console.log(this.getXY())
+    // console.log(this.getXY())
     return (
       <div id="wrapper" className={className}>
         <div className="info">
           <h3 id="coordinates">{this.getXYMessage()}</h3>
-          <h3 id="steps">You moved {`${this.state.steps}`} times</h3>
+          <h3 id="steps">You moved {this.state.steps} times</h3>
         </div>
         <div id="grid">
           {
@@ -107,14 +125,14 @@ export default class AppClass extends React.Component {
           <h3 id="message"></h3>
         </div>
         <div id="keypad">
-          <button id="left">LEFT</button>
-          <button id="up">UP</button>
-          <button id="right">RIGHT</button>
-          <button id="down">DOWN</button>
+          <button id="left" onClick={this.move}>LEFT</button>
+          <button id="up" onClick={this.move}>UP</button>
+          <button id="right" onClick={this.move}>RIGHT</button>
+          <button id="down" onClick={this.move}>DOWN</button>
           <button id="reset" onClick={this.reset}>reset</button>
         </div>
-        <form>
-          <input id="email" type="email" placeholder="type email"></input>
+        <form onSubmit={this.onSubmit}>
+          <input id="email" type="email" placeholder="type email" onChange={this.onChange}></input>
           <input id="submit" type="submit"></input>
         </form>
       </div>

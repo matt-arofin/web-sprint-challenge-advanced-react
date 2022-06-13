@@ -31,6 +31,7 @@ export default class AppClass extends React.Component {
       email: initialEmail,
       index: initialIndex,
       steps: initialSteps,
+      success: null
     };
   }
   
@@ -51,7 +52,7 @@ export default class AppClass extends React.Component {
     // It it not necessary to have a state to track the "Coordinates (2, 2)" message for the user.
     // You can use the `getXY` helper above to obtain the coordinates, and then `getXYMessage`
     // returns the fully constructed string.
-    return `Coordinates: ${this.coordinatesArr[this.state.index][0]}, ${this.coordinatesArr[this.state.index][1]}`
+    return `(${this.coordinatesArr[this.state.index][0]}, ${this.coordinatesArr[this.state.index][1]})`
   }
 
   reset = () => {
@@ -61,7 +62,9 @@ export default class AppClass extends React.Component {
       email: initialEmail,
       index: initialIndex,
       steps: initialSteps,
+      success: null /* Added this field myself to decide whether to helps render the success message in JSX */
     });
+    document.getElementById('email').value = ''
   }
 
   getNextIndex = (direction) => {
@@ -83,10 +86,10 @@ export default class AppClass extends React.Component {
   move = (evt) => {
     // This event handler can use the helper above to obtain a new index for the "B",
     // and change any states accordingly. this.setState()
-    this.getNextIndex(evt.target.id);
-    console.log('moving from: ', this.getNextIndex(evt.target.id))
+    // this.getNextIndex(evt.target.id);
+    // console.log('moving from: ', this.getNextIndex(evt.target.id))
     this.setState({...this.state, ...this.getNextIndex(evt.target.id)})
-    console.log("Move handler triggered - previous state: ", this.state)
+    // console.log("Move handler triggered - previous state: ", this.state)
   }
 
   onChange = (evt) => {
@@ -98,10 +101,24 @@ export default class AppClass extends React.Component {
 
   onSubmit = (evt) => {
     // Use a POST request to send a payload to the server.
-    // axios.post(http://localhost:9000/api/result, { "x": 1, "y": 2, "steps": 3, "email": "lady@gaga.com" })
-    // post data format: {`"x": ${this.coordinatesArr[this.state.index][0]}, "y": ${this.coordinatesArr[this.state.index][1]}, "steps": ${this.steps}, "email": ${this.email}`}
-    console.log(evt.target)
+    const x = this.coordinatesArr[this.state.index][0];
+    const y = this.coordinatesArr[this.state.index][1];
+    const steps = this.state.steps;
+    const email = this.state.email;
+    // const emailInput = document.getElementById('email')
+    evt.preventDefault();
+    // console.log({"x": x, "y": y, "steps": steps, "email": email})
+    axios.post(`http://localhost:9000/api/result`, {"x": x, "y": y, "steps": steps, "email": email})
+      .then(res => {return this.setState({...this.state, success:res.data.message})})
+      .catch(err => console.error(err))
+      .finally(document.getElementById('email').value = '')
   }
+
+  // I need a validator to show the following error messages in the success bar:
+  // no email entered = "Ouch: email is required"
+  // foo@bar.baz = "foo@bar.baz failure #71"
+  // string entered is not a valid email = "Out: email must be a valid eemail"
+
 
   render() {
     const { className } = this.props;
@@ -109,7 +126,7 @@ export default class AppClass extends React.Component {
     return (
       <div id="wrapper" className={className}>
         <div className="info">
-          <h3 id="coordinates">{this.getXYMessage()}</h3>
+          <h3 id="coordinates">Coordinates: {this.getXYMessage()}</h3>
           <h3 id="steps">You moved {this.state.steps} times</h3>
         </div>
         <div id="grid">
@@ -122,7 +139,7 @@ export default class AppClass extends React.Component {
           }
         </div>
         <div className="info">
-          <h3 id="message"></h3>
+          <h3 id="message">{this.state.success}</h3>
         </div>
         <div id="keypad">
           <button id="left" onClick={this.move}>LEFT</button>

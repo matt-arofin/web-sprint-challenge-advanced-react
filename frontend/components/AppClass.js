@@ -73,14 +73,16 @@ export default class AppClass extends React.Component {
     // this helper should return the current index unchanged.
     // Up and Down should change index +/- 3:
     if(direction === 'up' && this.state.index -3  >= 0){
-      return {index:this.state.index - 3, steps:this.state.steps + 1}
+      return {index:this.state.index - 3, steps:this.state.steps + 1, success:null}
     } else if(direction === 'down' && this.state.index + 3 <= 8){
-      return {index:this.state.index + 3, steps:this.state.steps + 1}
+      return {index:this.state.index + 3, steps:this.state.steps + 1, success:null}
     } else if(direction === 'left' && this.state.index - 1 >= 0 && this.state.index != 3 && this.state.index != 6){
-      return {index:this.state.index - 1, steps:this.state.steps + 1}
-    } else if(direction === 'right' && this.state.index + 1 <= 8 && this.state.index !=  2 && this.state.index != 5){
-      return {index:this.state.index + 1, steps:this.state.steps + 1}
-    } else {return {index:this.state.index}}
+      return {index:this.state.index - 1, steps:this.state.steps + 1, success:null}
+    } /* else if(direction === 'left' && this.state.index == 3 || this.state.index == 6){
+      return {...this.state, success:"You can't go left"}
+    } */ else if(direction === 'right' && this.state.index + 1 <= 8 && this.state.index !=  2 && this.state.index != 5){
+      return {index:this.state.index + 1, steps:this.state.steps + 1, success:null}
+    } else {return {...this.state, success: `You can't move ${direction}`}}
   }
 
   move = (evt) => {

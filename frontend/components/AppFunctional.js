@@ -37,6 +37,7 @@ export default function AppFunctional(props) {
   function reset() {
     // Use this helper to reset all states to their initial values.
     setState({message: initialMessage, email: initialEmail, steps: initialSteps, index: initialIndex});
+    document.getElementById('email').value = ''
   }
 
   function getNextIndex(direction) {

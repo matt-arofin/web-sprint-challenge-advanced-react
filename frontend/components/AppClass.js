@@ -52,7 +52,7 @@ export default class AppClass extends React.Component {
     // It it not necessary to have a state to track the "Coordinates (2, 2)" message for the user.
     // You can use the `getXY` helper above to obtain the coordinates, and then `getXYMessage`
     // returns the fully constructed string.
-    return `(${this.coordinatesArr[this.state.index][0]}, ${this.coordinatesArr[this.state.index][1]})`
+    return `(${this.getXY()[0]}, ${this.getXY()[1]})`
   }
 
   reset = () => {
@@ -72,13 +72,13 @@ export default class AppClass extends React.Component {
     // of the "B" would be. If the move is impossible because we are at the edge of the grid,
     // this helper should return the current index unchanged.
     // Up and Down should change index +/- 3:
-    if(direction == 'up' && this.state.index -3  >= 0){
+    if(direction === 'up' && this.state.index -3  >= 0){
       return {index:this.state.index - 3, steps:this.state.steps + 1}
-    } else if(direction == 'down' && this.state.index + 3 <= 8){
+    } else if(direction === 'down' && this.state.index + 3 <= 8){
       return {index:this.state.index + 3, steps:this.state.steps + 1}
-    } else if(direction == 'left' && this.state.index - 1 >= 0){
+    } else if(direction === 'left' && this.state.index - 1 >= 0 && this.state.index != 3 && this.state.index != 6){
       return {index:this.state.index - 1, steps:this.state.steps + 1}
-    } else if(direction == 'right' && this.state.index + 1 <= 8){
+    } else if(direction === 'right' && this.state.index + 1 <= 8 && this.state.index !=  2 && this.state.index != 5){
       return {index:this.state.index + 1, steps:this.state.steps + 1}
     } else {return {index:this.state.index}}
   }

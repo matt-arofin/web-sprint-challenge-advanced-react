@@ -7,6 +7,7 @@ const initialMessage = ''
 const initialEmail = ''
 const initialSteps = 0
 const initialIndex = 4 // the index the "B" is at
+const initialState = {message: initialMessage, email: initialEmail, steps: initialSteps, index: initialIndex, success:null}
 
 export default function AppFunctional(props) {
   // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
@@ -17,7 +18,7 @@ export default function AppFunctional(props) {
     [1,3], [2,3], [3,3]
   ];
 
-  const [state, setState] = useState({message: initialMessage, email: initialEmail, steps: initialSteps, index: initialIndex});
+  const [state, setState] = useState(initialState);
   console.log(state)
 
   function getXY() {
@@ -37,7 +38,7 @@ export default function AppFunctional(props) {
 
   function reset() {
     // Use this helper to reset all states to their initial values.
-    setState({message: initialMessage, email: initialEmail, steps: initialSteps, index: initialIndex});
+    setState({...initialState, message: initialMessage, email: initialEmail, success:null});
     document.getElementById('email').value = ''
   }
 
@@ -47,14 +48,14 @@ export default function AppFunctional(props) {
     // this helper should return the current index unchanged.
     // Should not allow you to endlessly sidescroll (ie moving from the right edge to the left continuously clicking right)
     if(direction === 'up' && state.index - 3 >= 0){
-      return {...state, index:state.index-3, steps:state.steps+1};
+      return {...state, index:state.index-3, steps:state.steps+1, success:null};
     } else if(direction === 'down' && state.index + 3 <= 8){
-      return {...state, index:state.index+3, steps:state.steps+1};
+      return {...state, index:state.index+3, steps:state.steps+1, success:null};
     } else if(direction === 'left' && state.index - 1 >= 0 && state.index != 3 && state.index != 6){
-      return {...state, index:state.index-1, steps:state.steps+1};
+      return {...state, index:state.index-1, steps:state.steps+1, success:null};
     } else if(direction === 'right' && state.index + 1 <= 8 && state.index != 2 && state.index != 5){
-      return {...state, index:state.index+1, steps:state.steps+1};
-    } else {return state}
+      return {...state, index:state.index+1, steps:state.steps+1, success:null};
+    } else {return {...state, success:`You can't go ${direction}`}}
   }
 
   function move(evt) {
@@ -79,9 +80,9 @@ export default function AppFunctional(props) {
     // const emailInput = document.getElementById('email')
     evt.preventDefault();
     // console.log({"x": x, "y": y, "steps": steps, "email": email})
-    axios.post(`http://localhost:9000/api/result`, {"x": x, "y": y, "steps": steps, "email": email})
+    axios.post(`http://localhost:9000/api/result`, {"x": x, "y": y, "steps": steps, "email": email.trim()})
       .then(res => {return setState({...state, success:res.data.message})})
-      .catch(err => console.error(err))
+      .catch(err => {return setState({...state, success:err.response.data.message})})
       .finally(document.getElementById('email').value = '')
   }
 
@@ -101,7 +102,7 @@ export default function AppFunctional(props) {
         }
       </div>
       <div className="info">
-        <h3 id="message"></h3>
+        <h3 id="message">{state.success}</h3>
       </div>
       <div id="keypad">
         <button id="left" onClick={move}>LEFT</button>

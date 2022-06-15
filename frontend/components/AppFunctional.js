@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import axios from 'axios';
+import * as yup from 'yup';
 
 // Suggested initial states
 const initialMessage = ''

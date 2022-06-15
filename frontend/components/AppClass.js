@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+// import * as yup from 'yup';
 
 
 // Suggested initial states
@@ -20,6 +21,10 @@ const initialIndex = 4 // the index the "B" is at
 // [1,2], [2,2], [3,2],
 // [1,3], [2,3], [3,3]
 // ]; /* - initialIndex = array[4] */
+
+// let schema = yup.object().shape({
+//   email: yup.string().trim().email()
+// })
 
 export default class AppClass extends React.Component {
   // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
@@ -78,11 +83,9 @@ export default class AppClass extends React.Component {
       return {index:this.state.index + 3, steps:this.state.steps + 1, success:null}
     } else if(direction === 'left' && this.state.index - 1 >= 0 && this.state.index != 3 && this.state.index != 6){
       return {index:this.state.index - 1, steps:this.state.steps + 1, success:null}
-    } /* else if(direction === 'left' && this.state.index == 3 || this.state.index == 6){
-      return {...this.state, success:"You can't go left"}
-    } */ else if(direction === 'right' && this.state.index + 1 <= 8 && this.state.index !=  2 && this.state.index != 5){
+    } else if(direction === 'right' && this.state.index + 1 <= 8 && this.state.index !=  2 && this.state.index != 5){
       return {index:this.state.index + 1, steps:this.state.steps + 1, success:null}
-    } else {return {...this.state, success: `You can't move ${direction}`}}
+    } else {return {...this.state, success: `You can't go ${direction}`}}
   }
 
   move = (evt) => {
@@ -110,7 +113,16 @@ export default class AppClass extends React.Component {
     // const emailInput = document.getElementById('email')
     evt.preventDefault();
     // console.log({"x": x, "y": y, "steps": steps, "email": email})
-    axios.post(`http://localhost:9000/api/result`, {"x": x, "y": y, "steps": steps, "email": email})
+    // let schema = yup.object().shape({
+    //   email: yup.string().trim().email()
+    // })
+
+    if(email == ''){
+      return {...this.state, success:'Ouch: email is required'}
+    } else if(email == 'foo@bar.baz'){
+      return {...this.state, success:'foo@bar.baz failure #71'}
+    }
+    axios.post(`http://localhost:9000/api/result`, {"x": x, "y": y, "steps": steps, "email": email.trim()})
       .then(res => {return this.setState({...this.state, success:res.data.message})})
       .catch(err => console.error(err))
       .finally(document.getElementById('email').value = '')
@@ -129,7 +141,7 @@ export default class AppClass extends React.Component {
       <div id="wrapper" className={className}>
         <div className="info">
           <h3 id="coordinates">Coordinates: {this.getXYMessage()}</h3>
-          <h3 id="steps">You moved {this.state.steps} times</h3>
+          <h3 id="steps">You moved {this.state.steps} {this.state.steps == 1 ? 'time' : 'times'}</h3>
         </div>
         <div id="grid">
           {

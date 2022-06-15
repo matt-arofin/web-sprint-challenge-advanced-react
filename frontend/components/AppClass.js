@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-// import * as yup from 'yup';
+// import * as yup from 'yup'; <--- yup not needed - API response handles errors
 
 
 // Suggested initial states
@@ -112,19 +112,10 @@ export default class AppClass extends React.Component {
     const email = this.state.email;
     // const emailInput = document.getElementById('email')
     evt.preventDefault();
-    // console.log({"x": x, "y": y, "steps": steps, "email": email})
-    // let schema = yup.object().shape({
-    //   email: yup.string().trim().email()
-    // })
-
-    if(email == ''){
-      return {...this.state, success:'Ouch: email is required'}
-    } else if(email == 'foo@bar.baz'){
-      return {...this.state, success:'foo@bar.baz failure #71'}
-    }
+    // console.log({"x": x, "y": y, "steps": steps, "email": email.trim()})
     axios.post(`http://localhost:9000/api/result`, {"x": x, "y": y, "steps": steps, "email": email.trim()})
       .then(res => {return this.setState({...this.state, success:res.data.message})})
-      .catch(err => console.error(err))
+      .catch(err => {return this.setState({...this.state, success:err.response.data.message})})
       .finally(document.getElementById('email').value = '')
   }
 

@@ -101,7 +101,7 @@ export default class AppClass extends React.Component {
     // You will need this to update the value of the input.
     // Handler should update email field in form
     this.setState({...this.state, email:evt.target.value});
-    console.log(this.state.email);
+    // console.log(this.state.email);
   }
 
   onSubmit = (evt) => {

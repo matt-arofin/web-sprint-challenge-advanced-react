@@ -19,7 +19,7 @@ export default function AppFunctional(props) {
   ];
 
   const [state, setState] = useState(initialState);
-  console.log(state)
+  // console.log(state)
 
   function getXY() {
     // It it not necessary to have a state to track the coordinates.
@@ -61,7 +61,7 @@ export default function AppFunctional(props) {
   function move(evt) {
     // This event handler can use the helper above to obtain a new index for the "B",
     // and change any states accordingly.
-    console.log(evt.target.id)
+    // console.log(evt.target.id)
     setState(getNextIndex(evt.target.id))
   }
 
@@ -113,7 +113,7 @@ export default function AppFunctional(props) {
       </div>
       <form>
         <input id="email" type="email" placeholder="type email" onChange={onChange}></input>
-        <input id="submit" type="submit" onClick={onSubmit}></input>
+        <input id="submit" type="submit" data-testid="submit" onClick={onSubmit}></input>
       </form>
     </div>
   )
